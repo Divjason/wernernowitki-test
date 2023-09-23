@@ -1,0 +1,106 @@
+http://localhost:3000/process_create?title=hi&description=lorem
+
+get( ) : 
+post( ) : 
+
+writeHead : 
+2xx : 정상적으로 클라이언트 & 서버 통신
+3xx : 클라이언트의 요청에 서버가 리다이렉트를 했을 경우
+4xx : 클라이언트가 존재하는 않는 페이지를 서버에게 요청
+5xx : 클라이언트는 정상적으로 서버측에 요청을 했으나, 서버에서 해당 요청사항을 응답할 수 없는 상태
+
+*현재까지 진행된 코드 확인 및 다운로드 해주세요~!!
+Repository : wernernowitki
+https://github.com/wernernowitki/test/tree/master/230923
+
+폴더 > File 관리하는 것은 아주 간단하고 심플한 프로젝트
+고차원적인 요구사항이 발생될 경우!! => 1억개 이상의 데이터가 있는데, user가 특정 keyword 검색 후 매칭되는 결과값을 신속, 정확하게 전달해야하는 경우!!!
+
+File => File형태의 다수의 Data를 효율적으로 보관.관리해야하는 Needs => 1960년대!!! => 1970년대에 애드거 프랭크 커드 라는 개발자 => 엑셀시트 (*스프레드 시트 처럼) 데이터를 관리할 수 있게 해주면? => 관계형 데이터베이스!!! => 무료!! / 오픈소스!!! => MySQL!!!
+
+MySQL : 1994년 개발 / 스웨덴!!!
+
+
+
+
+
+
+1.mysql 접속 시, 반드시 실행파일이 설치되어 있는 폴더에서 접속해야 함!!!
+
+2.mysql 접속 시, 명령문 :
+mysql -h localhost -u root -p
+
+3.mysql 종료 시, 명령문 :
+exit
+
+4.mysql => 관계형 데이터 베이스
+"관계형" => 엑셀 시트 탭 여러개 => 호환 및 공유!!!
+특정 Data를 보관하기 위해서 만드는 요소 : 테이블
+
+5.mysql 시작할 때 사용하는 명령어 :
+CREATE SCHEMA `nodejs` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
+
+6.mysql 데이터 생성 (in 터미널)
+mysql> CREATE TABLE nodejs.users (
+    -> id INT NOT NULL AUTO_INCREMENT,
+    -> name VARCHAR(20) NOT NULL,
+    -> age INT UNSIGNED NOT NULL,
+    -> married TINYINT NOT NULL,
+    -> comment TEXT NULL,
+    -> created_at DATETIME NOT NULL DEFAULT now(),
+    -> PRIMARY KEY(id),
+    -> UNIQUE INDEX name_UNIQUE (name ASC))
+    -> COMMENT = "사용자정보"
+    -> ENGINE = InnoDB;
+
+7.테이블을 잘못만들었을 경우, 명령어!!!
+- DROP TABLE users(*테이블명);
+
+8.mysql 테이블 추가 생성
+mysql> CREATE TABLE nodejs.comments (
+    -> id INT NOT NULL AUTO_INCREMENT,
+    -> commenter INT NOT NULL,
+    -> comment VARCHAR(100) NOT NULL,
+    -> created_at DATETIME NOT NULL DEFAULT now(),
+    -> PRIMARY KEY(id),
+    -> INDEX commenter_idx (commenter ASC),
+    -> CONSTRAINT commenter
+    -> FOREIGN KEY (commenter)
+    -> REFERENCES nodejs.users (id)
+    -> ON DELETE CASCADE
+    -> ON UPDATE CASCADE)
+    -> COMMENT = "댓글"
+    -> ENGINE = InnoDB;
+
+9.1개의 스키마 안에 현존하는 테이블 조회하고 싶을 때
+SHOW TABLES;
+
+10.테이블 내 데이터를 생성하고자 할 때
+INSERT INTO nodejs.users (name, age, married, comment) VALUES ("zero", 24, 0, "자기소개1");
+
+11.테이블 내 데이터를 조회하고자 할 때
+SELECT * FROM nodejs.users;
+
+12.테이블 내 특정 컬럼값만 조회하고자 할 때
+SELECT name, married FROM nodejs.users;
+
+13. 테이블 내 특정 조건을 가진 데이터만 조회하고자 할 때
+SELECT name, age FROM nodejs.users WHERE married = 1 AND age > 30;
+
+14.테이블 내 특정 조건 중 하나라도 충족되는 경우 조회하고자 할 때
+SELECT id, name FROM nodejs.users WHERE married = 0 OR age > 30;
+
+15.테이블 내 오름 및 내림차순 정렬을 하고자 할 때
+SELECT id, name FROM nodejs.users ORDER BY age DESC; / ASC
+
+16.조회할 로우(*행) 개수 설정하고자 할 때
+SELECT id, name FROM nodejs.users ORDER BY age DESC LIMIT 1;
+
+17.로우(*행) 개수를 설정하면서, 행을 몇 개 건너뛸지 설정하는 명령어
+SELECT id, name FROM nodejs.users ORDER BY age DESC LIMIT 1 OFFSET 1;
+
+18.특정 컬럼 및 행 데이터 값을 수정하고자 할 때
+UPDATE nodejs.users SET comment = "바꿀 내용" WHERE id = 2;
+
+19.특정 컬럼 및 행 데이터 값을 삭제하고자 할 때
+DELETE FROM nodejs.users WHERE id = 2;
